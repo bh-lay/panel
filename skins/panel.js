@@ -37,9 +37,9 @@ var console = console||{'log':function(a){alert(a)}};
 			},20);
 		})
 		// trigger panel event
-		.on('mousedown','div,a,span',function(e){
-			//if(e.button == 2){
-			if(e.button > 0){
+		.on('mousedown','div,p,dl,dt,dd,ul,ol,li,tr,th,td',function(e){
+			if(e.button == 2){
+			//if(e.button > 0){
 				var x = e.clientX + 1,
 					y = e.clientY + $('body').scrollTop() + 1;
 				var that = $(this);
@@ -72,7 +72,7 @@ var console = console||{'log':function(a){alert(a)}};
 	function show_menu(x,y,param,callback){
 		var menu_html = menu_tpl.join('');
 		var list_html = '';
-		for(var i=0,total=param.length;i<total;i++){
+		for(var i=0 in param){
 			if(param[i]['disable']){
 				list_html += '<li><span btn_name="' + (param[i]['name']||'') + '" href="javascript:;">' + (param[i]['txt']||'') + '</span></li>';
 			}else{
@@ -112,18 +112,18 @@ var console = console||{'log':function(a){alert(a)}};
 
 $(function(){
 	$('.pageInner').on('panel','.testButton',function(e,panel){
-		panel.menu([
-			{'txt':'打开','name':'open'},
-			{'txt':'下载','name':'download'},
-			{'txt':'云冲印','name':'print'},
-			{'txt':'分享','name':'share','disable':true},
-			{'txt':'移动到','name':'move'},
-			{'txt':'复制到','name':'copy'},
-			{'txt':'重命名','name':'rename','disable':true},
-			{'txt':'删除','name':'delete'},
-			{'txt':'美化','name':'beautify'},
-			{'txt':'历史版本','name':'history'}
-		],function(name){
+		panel.menu({
+			'open' : {'txt':'打开'},
+			'download' : {'txt':'下载'},
+			'print' : {'txt':'云冲印'},
+			'share' : {'txt':'分享','disable':true},
+			'move' : {'txt':'移动到'},
+			'copy' : {'txt':'复制到'},
+			'rename' : {'txt':'重命名','disable':true},
+			'delete' : {'txt':'删除'},
+			'beautify' : {'txt':'美化'},
+			'history' : {'txt':'历史版本'}
+		},function(name){
 			console.log(name);
 		});
 	}).on('panel','.testButton2',function(e,panel){
