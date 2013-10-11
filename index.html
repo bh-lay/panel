@@ -5,17 +5,6 @@
 	<meta target="_blank"/>
 	<title>右键菜单</title>
 	<link href="skins/style.css" rel="stylesheet" />
-	<style type="text/css">
-		body,div, p,ul,ol,li,a{margin:0px;padding:0px;}
-		li{list-style:none;}
-		body{font-family: "Microsoft Yahei";background:#444}
-		a{text-decoration:none;}
-
-		.pageCnt{padding-top:200px;font-size:24px;text-align:center;}
-		.testButton,
-		.testButton2,
-		.testButton3{width: 400px;height:50px;line-height:50px;margin:0px auto 50px;border-radius:4px;box-shadow:1px 1px 3px #000; background: #fff;color:#333;}
-	</style>
 	<script src="skins/jquery.js" type="text/javascript"></script>
 	<script src="skins/panel.js" type="text/javascript"></script>
 </head>
@@ -27,5 +16,35 @@
 			<div class="testButton3">click me with right button</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		//创建一个右键绑定
+	var o = panel($('.testButton'), {
+		'open' : {'txt' : '打开'},
+		'rename' : {'txt' : '重命名','disable' : true},
+		'delete' : {'txt' : '删除'},
+	},function(name) {
+		console.log('you have chioce "' , name , '" from the [ ' , this , ']');
+	});
+	
+	//指定类型
+	o.type = 'menu';//@param:'menu','dock'
+	//选项置灰
+	o.disable('share');
+	//选项恢复
+	o.disable('share',false);
+	//增删菜单条目
+	o.addList('test',{'txt':'测试'},function(){
+		alert(12)
+	});
+	o.removeList('copy');
+	var a = panel($('.testButton2'), {
+		'open' : {'txt' : '打开'},
+		'rename' : {'txt' : '重命名','disable' : true},
+		'delete' : {'txt' : '删除'},
+	},function(name) {
+		console.log('you have chioce "' , name , '" from the [ ' , this , ']');
+	});
+	a.type = 'dock';
+	</script>
 </body>
 </html>

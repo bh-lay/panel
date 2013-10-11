@@ -1,19 +1,9 @@
-/**
- * panel menu & panel dock
- */
-.panel_menu{position: absolute;z-index :10000;width:140px;background:#fff;border:1px solid #444;border-radius:4px;box-shadow:1px 1px 40px #000;}
-.pa_me_list{padding:4px 0px;}
-.pa_me_list li{line-height:20px;}
-.pa_me_list li span,
-.pa_me_list li a{line-height:20px;display:block;font-size:12px;color:#aaa;text-indent:2em;padding: 2px 5px;}
-.pa_me_list li span{cursor: default;}
-.pa_me_list li a{color:#444;}
-.pa_me_list li a:hover{color:#000;background:#eee;}
+		body,div, p,ul,ol,li,a{margin:0px;padding:0px;}
+		li{list-style:none;}
+		body{font-family: "Microsoft Yahei";background:#444}
+		a{text-decoration:none;}
 
-.panel_dock{position: absolute;z-index :10000;background:#444;border-radius:4px;box-shadow:1px 1px 40px #000;_border:1px solid #666;}
-.pa_do_body{padding:0px 10px;}
-.panel_dock span,
-.panel_dock a{line-height:32px;display:inline-block;font-size:12px;color:#888;padding: 0px 10px;}
-.panel_dock span{cursor: default;}
-.panel_dock a{color:#f4f4f4;}
-.panel_dock a:hover{color:#222;background:#eee;}
+		.pageCnt{padding-top:200px;font-size:24px;text-align:center;}
+		.testButton,
+		.testButton2,
+		.testButton3{width: 400px;height:50px;line-height:50px;margin:0px auto 50px;border-radius:4px;box-shadow:1px 1px 3px #000; background: #fff;color:#333;}
