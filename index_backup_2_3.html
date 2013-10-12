@@ -16,21 +16,14 @@
 			<div class="testButton3">click me with right button</div>
 		</div>
 	</div>
-<script type="text/javascript">
+	<script type="text/javascript">
 		//创建一个右键绑定
-	var o = panel({
-		'targets' : '.testButton',
-		'list' : {
-			'open' : {'txt' : '打开'},
-			'rename' : {'txt' : '重命名','disable' : true},
-			'delete' : {'txt' : '删除'},
-		},
-		'callback':function(name) {
-			console.log('you have chioce "' , name , '" from the [ ' , this , ']');
-		},
-		'callbefore' : function(){
-			console.log('you have panel [ ' , this , ']');
-		}
+	var o = panel($('.testButton'), {
+		'open' : {'txt' : '打开'},
+		'rename' : {'txt' : '重命名','disable' : true},
+		'delete' : {'txt' : '删除'},
+	},function(name) {
+		console.log('you have chioce "' , name , '" from the [ ' , this , ']');
 	});
 	
 	//指定类型
@@ -44,7 +37,14 @@
 		alert(12)
 	});
 	o.removeList('copy');
-
-</script>
+	var a = panel($('.testButton2'), {
+		'open' : {'txt' : '打开'},
+		'rename' : {'txt' : '重命名','disable' : true},
+		'delete' : {'txt' : '删除'},
+	},function(name) {
+		console.log('you have chioce "' , name , '" from the [ ' , this , ']');
+	});
+	a.type = 'dock';
+	</script>
 </body>
 </html>

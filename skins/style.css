@@ -1,9 +1,9 @@
-		body,div, p,ul,ol,li,a{margin:0px;padding:0px;}
-		li{list-style:none;}
-		body{font-family: "Microsoft Yahei";background:#444}
-		a{text-decoration:none;}
-
-		.pageCnt{padding-top:200px;font-size:24px;text-align:center;}
-		.testButton,
-		.testButton2,
-		.testButton3{width: 400px;height:50px;line-height:50px;margin:0px auto 50px;border-radius:4px;box-shadow:1px 1px 3px #000; background: #fff;color:#333;}
+body,div, p,ul,ol,li,a{margin:0px;padding:0px;}
+li{list-style:none;}
+html{height:100%;}
+body{font-family: "Microsoft Yahei";background:#444;height:100%;}
+a{text-decoration:none;}
+.pageCnt{padding-top:200px;font-size:24px;text-align:center;}
+.testButton,
+.testButton2,
+.testButton3{width: 400px;height:50px;line-height:50px;margin:0px auto 50px;border-radius:4px;box-shadow:1px 1px 3px #000; background: #fff;color:#333;}
