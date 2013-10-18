@@ -53,12 +53,11 @@ var panel = panel || function(param) {
 	var menu_tpl = ['<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>'];
 	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
 	var style_tpl = ['<style type="text/css">',
-		'.panel_menu{position: absolute;z-index :10000;width:140px;background:#fff;border:1px solid #888;border-radius:4px;}',
-		'.pa_me_list{padding:4px 0px;}',
-		'.pa_me_list {line-height:20px;}',
+		'.panel_menu{position: absolute;z-index :10000;width:140px;background:#fff;border:1px solid #bbb;border-radius:4px;}',
+		'.pa_me_list{padding:5px 0px;}',
 		'.pa_me_list span,',
-		'.pa_me_list a{line-height:20px;display:block;font-size:12px;color:#aaa;text-indent:2em;padding: 2px 5px;text-decoration:none;}',
-		'.pa_me_list span{cursor: default;}',
+		'.pa_me_list a{line-height:24px;display:block;font-size:12px;text-indent:2em;padding: 2px 5px;text-decoration:none;}',
+		'.pa_me_list span{cursor: default;color:#aaa;}',
 		'.pa_me_list a{color:#444;}',
 		'.pa_me_list a:hover{color:#000;background:#eee;}',
 		'.panel_dock{position: absolute;z-index :10000;background:#444;border-radius:4px;box-shadow:1px 1px 40px #000;_border:1px solid #666;}',
@@ -69,6 +68,10 @@ var panel = panel || function(param) {
 		'.panel_dock a{color:#f4f4f4;}',
 		'.panel_dock a:hover{color:#222;background:#eee;}',
 	'</style>'];
+	
+	////////////////////////////////////////////
+	console = console || {'log':function(){}};
+	////////////////////////////////////////////
 	
 	function bind_wheel(scrollFunc){
 		//W3C
@@ -86,7 +89,8 @@ var panel = panel || function(param) {
 	// Unified to remove panel dom
 	function remove_panel(){
 		if(pvt_panel){
-			pvt_panel.remove();
+			//pvt_panel.remove();
+			$('.panel_mark').remove();
 			pvt_panel = null;
 		}
 	}
@@ -160,7 +164,7 @@ var panel = panel || function(param) {
 		
 		var panel_dom = $(panel_tpl);
 		panel_dom.on('click', 'a', function() {
-			panel_dom.remove();
+			remove_panel()
 			var this_name = $(this).attr('data-name') || '';
 
 			if ($(this).attr('data-callback')) {
@@ -174,6 +178,7 @@ var panel = panel || function(param) {
 		});
 		
 		//append panel dom and mark the dom mark
+      remove_panel();
 		$('body').append(panel_dom);
 		pvt_panel = panel_dom;
 		
@@ -211,27 +216,39 @@ var panel = panel || function(param) {
     }
 
     // exports start /////////////////////////////////////////
-    function construction(doms_path,type,args,callback,callbefore) {
-        var this_panel = this;
-        this.type = type;
-        this.list = filter_clone(args);
-			if(!doms_path){
+	function construction(doms_path,type,args,callback,callbefore) {
+		var this_panel = this;
+		this.type = type;
+		this.list = filter_clone(args);
+		if(!doms_path){
+			return
+		}
+		$('body').on('mousedown',doms_path, function(e) {
+			var this_dom = this;
+			remove_panel()
+			if(e.target.tagName.match(/INPUT|TEXTAREA/i)){
 				return
 			}
-        $('body').on('mousedown',doms_path, function(e) {
-            var this_dom = this;
-            remove_panel();
-            if (e.button == 2) {
-                //if(e.button > 0){
-               var x = e.clientX + 1, y = e.clientY + $('body').scrollTop() + 1;
-					callbefore&&callbefore.call(this_dom);
-               setTimeout(function() {
-                   show_panel(x, y, this_panel.type, this_panel.list, this_dom, callback);
-               },40);
-            }
-            return false
-        }).on('contextmenu',doms_path, function() {
-            return false;
+			//console.log(e,e.cancelBubble,e.preventDefault,e.stopPropagation)			
+			if (e.button == 2) {
+				e.bubbles=false
+				e.cancelBubble=true;
+				e.preventDefault&&e.preventDefault();
+				e.stopPropagation&&e.stopPropagation();
+				//if(e.button > 0){
+				var x = e.clientX + 1, y = e.clientY + $('body').scrollTop() + 1;
+				callbefore&&callbefore.call(this_dom);
+				setTimeout(function() {
+					show_panel(x, y, this_panel.type, this_panel.list, this_dom, callback);
+				},40);
+			}
+			//return false
+		}).on('contextmenu',doms_path, function(e) {
+		//	return false;
+			console.log(e)
+			if(!e.target.tagName.match(/INPUT|TEXTAREA/i)){
+         	return false
+         }
 		});
 	};
 	construction.prototype = {
