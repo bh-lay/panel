@@ -1,5 +1,5 @@
 /**
- * @author 作者:剧中人
+ * @author 剧中人
  * panel
  * the right key of mouse
  *
@@ -13,11 +13,11 @@
  * 			'rename' : {'txt' : '重命名','display' : 'disable'},
  * 			'delete' : {'txt' : '删除'}
  * 		},
- * 		callback:function(name) {
- * 			console.log('you have chioce "' , name , '" from the [ ' , this , ']');
- * 		},
  * 		callbefore:function(){
  * 			//右键之后菜单弹出之前，可以在这里做些事情
+ * 		},
+ * 		callback:function(name) {
+ * 			console.log('you have chioce "' , name , '" from the [ ' , this , ']');
  * 		}
  * 	});
  * //指定类型
@@ -34,7 +34,7 @@
  */
 
 var panel = panel || function(param) {
-	param = param || {};
+	var param = param || {};
 	var doms_path = param['targets'] || null,
 		 type = param['type'] || 'menu',
 		 args = param['list'] || {},
@@ -44,11 +44,16 @@ var panel = panel || function(param) {
 };
 
 (function(exports) {
+	////////////////////////////////////////////
+	var console = window.console || {'log':function(){}};
 	
 	var pvt_win = $(window),
 		 pvt_winW = pvt_win.width(),
 		 pvt_winH = pvt_win.height(),
-		 pvt_panel = null;
+		 pvt_panel = null,
+		 pvt_body = $('html,body'),
+		 pvt_scrollTop,
+		 pvt_scrollLeft;
 
 	var menu_tpl = ['<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>'];
 	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
@@ -69,18 +74,6 @@ var panel = panel || function(param) {
 		'.panel_dock a:hover{color:#222;background:#eee;}',
 	'</style>'];
 	
-	////////////////////////////////////////////
-	console = console || {'log':function(){}};
-	////////////////////////////////////////////
-	
-	function bind_wheel(scrollFunc){
-		//W3C
-		if(document.addEventListener){
-			document.addEventListener('DOMMouseScroll',scrollFunc,false); 
-		}
-		//IE/Opera/Chrome/Safari
-		window.onmousewheel = document.onmousewheel = scrollFunc;
-	}
 	function change_dispaly(name, check) {
 		if(typeof (this['list'][name]) == "object") {
 			this['list'][name]['display'] = check;
@@ -89,12 +82,13 @@ var panel = panel || function(param) {
 	// Unified to remove panel dom
 	function remove_panel(){
 		if(pvt_panel){
-			//pvt_panel.remove();
-			$('.panel_mark').remove();
+			pvt_panel.fadeOut(100,function(){
+				$(this).remove();
+			});
 			pvt_panel = null;
 		}
 	}
-	$(function() {
+	$(function(){
 		$('head').append(style_tpl.join(''));
 		//try to close panel
 		var bingo_panel = false;
@@ -102,7 +96,7 @@ var panel = panel || function(param) {
 			bingo_panel = true;
 		}).on('mousedown', function() {
 			setTimeout(function() {
-			    if (!bingo_panel) {
+				if (!bingo_panel) {
 					remove_panel()
 				}
 				bingo_panel = false;
@@ -111,18 +105,20 @@ var panel = panel || function(param) {
 			return false;
 		});
 		
-		//window resize 
-		$(window).on('resize',function(){
+		function reSize(){
 			pvt_winW = pvt_win.width();
 			pvt_winH = pvt_win.height();
-		});
-		// Scroll wheel remove panel
-		var wheel_delay = 0;
-		bind_wheel(function(){
-			clearTimeout(wheel_delay);
-			wheel_delay = setTimeout(function(){
-				remove_panel()
-			},60);
+			pvt_scrollTop = pvt_win.scrollTop();
+			pvt_scrollLeft = pvt_win.scrollLeft();
+		}
+		//window resize 
+		var delay;
+		$(window).on('resize scroll',function(){
+			clearTimeout(delay);
+			delay = setTimeout(function(){
+				reSize();
+				remove_panel();
+			},100);
 		});
 	});
 	//////////////////////////////////
@@ -186,11 +182,11 @@ var panel = panel || function(param) {
 		var panel_h = panel_dom.outerHeight(),
 			 panel_w = panel_dom.outerWidth();
 		
-		if(panel_h + top > pvt_winH){
-			top = top - panel_h;
+		if(panel_h + top > pvt_winH + pvt_scrollTop){
+			top = pvt_scrollTop + pvt_winH - panel_h;
 		}
-		if(panel_w + left > pvt_winW){
-			left = left - panel_w
+		if(panel_w + left > pvt_winW + pvt_scrollLeft){
+			left = pvt_scrollLeft + pvt_winW - panel_w
 		}
 		panel_dom.css({
 			'top' : top,
@@ -236,7 +232,8 @@ var panel = panel || function(param) {
 				e.preventDefault&&e.preventDefault();
 				e.stopPropagation&&e.stopPropagation();
 				//if(e.button > 0){
-				var x = e.clientX + 1, y = e.clientY + $('body').scrollTop() + 1;
+				var x = e.pageX,
+					 y = e.pageY;
 				callbefore&&callbefore.call(this_dom);
 				setTimeout(function() {
 					show_panel(x, y, this_panel.type, this_panel.list, this_dom, callback);
@@ -245,7 +242,6 @@ var panel = panel || function(param) {
 			//return false
 		}).on('contextmenu',doms_path, function(e) {
 		//	return false;
-			console.log(e)
 			if(!e.target.tagName.match(/INPUT|TEXTAREA/i)){
          	return false
          }
@@ -271,15 +267,14 @@ var panel = panel || function(param) {
 			}
 		},
 		'addList' : function(name, arg, callback) {
-			if(!(arg['display'] && arg['display'].match(/^(show|hide|disable)$/))){
-				arg['display'] = 'show';
+			if(!arg['display'] || !arg['display'].match(/^(show|hide|disable)$/)){
+				arg['display'] = null;
          }
-		
-			this['list'][name] = {
-				'txt' : arg['txt'],
-				'display' : arg['display'],
-				'callback' : callback || null
-			};
+			this['list'][name] = this['list'][name] || {};
+			var li = this['list'][name];
+			li['txt'] = arg['txt'] || li['txt'];
+			li['display'] = arg['display'] || li['display'];
+			li['callback'] = callback || li['callback'];
 		},
 		'removeList' : function(name) {
 			if ( typeof (this['list'][name]) == "object") {
