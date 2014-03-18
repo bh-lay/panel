@@ -34,15 +34,16 @@
  * 	});
  * 	o.remove('copy');
  */
+window.util = window.util || {};
 
-var panel = panel || function(param) {
+window.util.panel = window.util.panel || function(param) {
 	var param = param || {};
 	var doms_path = param['targets'] || null,
 		 type = param['type'] || 'menu',
 		 args = param['list'] || {},
 		 callback = param['callback'] || null,
 		 callbefore = param['callbefore'] || null;
-	return new panel.init(doms_path,type,args,callback,callbefore);
+	return new window.util.panel.init(doms_path,type,args,callback,callbefore);
 };
 
 (function(exports) {
@@ -285,4 +286,10 @@ var panel = panel || function(param) {
 		}
 	};
 	exports.init = construction;
-})(panel);
+})(window.util.panel);
+
+//提供CommonJS规范的接口
+window.define && define(function(require,exports,module){
+	//对外接口
+	return window.util.panel;
+});
