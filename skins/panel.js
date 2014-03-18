@@ -1,5 +1,7 @@
 /**
  * @author 剧中人
+ * @github https://github.com/bh-lay/panel
+ * @modified 2014-3-8 14:35
  * panel
  * the right key of mouse
  *
@@ -27,10 +29,10 @@
  * //选项恢复
  * 	o.display('delete','hide');
  * //增删菜单条目
- * 	o.addList('test',{'txt':'测试'},function(){
+ * 	o.add('test',{'txt':'测试'},function(){
  * 		alert(12)
  * 	});
- * 	o.removeList('copy');
+ * 	o.remove('copy');
  */
 
 var panel = panel || function(param) {
@@ -266,7 +268,7 @@ var panel = panel || function(param) {
 				return
 			}
 		},
-		'addList' : function(name, arg, callback) {
+		'add' : function(name, arg, callback) {
 			if(!arg['display'] || !arg['display'].match(/^(show|hide|disable)$/)){
 				arg['display'] = null;
          }
@@ -276,7 +278,7 @@ var panel = panel || function(param) {
 			li['display'] = arg['display'] || li['display'];
 			li['callback'] = callback || li['callback'];
 		},
-		'removeList' : function(name) {
+		'remove' : function(name) {
 			if ( typeof (this['list'][name]) == "object") {
 				delete this['list'][name];
 			}
