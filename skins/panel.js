@@ -62,7 +62,7 @@ window.util.panel = window.util.panel || function(param) {
 	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
 	var style_tpl = ['<style type="text/css">',
 		'.panel_menu{position: absolute;z-index :10000;width:140px;background:#fff;border:1px solid #bbb;border-radius:4px;}',
-		'.pa_me_list{padding:5px 0px;}',
+		'.pa_me_list{padding:5px 0px;margin:0px;}',
 		'.pa_me_list span,',
 		'.pa_me_list a{line-height:24px;display:block;font-size:12px;text-indent:2em;padding: 2px 5px;text-decoration:none;}',
 		'.pa_me_list span{cursor: default;color:#aaa;}',
