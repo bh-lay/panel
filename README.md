@@ -1,10 +1,10 @@
 panel.js
 =====
 #panel.js是什么
-panel.js是一个基于JQUERY的右键菜单插件，用于用户交互较为复杂的项目。
+panel.js是一个基于JQUERY的右键菜单插件，用于用户交互较为复杂的项目。[demo](http://htmlpreview.github.io/?https://github.com/bh-lay/panel/blob/master/index.html)
 
-#demo
 
+#如何使用
 ```javascript
 
   //创建一个右键绑定
