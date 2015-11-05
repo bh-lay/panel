@@ -34,29 +34,30 @@
  * 	});
  * 	o.remove('copy');
  */
-window.util = window.util || {};
 
-window.util.panel = window.util.panel || function(param) {
-	var param = param || {};
-	var doms_path = param['targets'] || null,
-		 type = param['type'] || 'menu',
-		 args = param['list'] || {},
-		 callback = param['callback'] || null,
-		 callbefore = param['callbefore'] || null;
-	return new window.util.panel.init(doms_path,type,args,callback,callbefore);
-};
+(function(global,doc,factory){
 
-(function(exports) {
+	if(global.define){
+		//提供CommonJS规范的接口
+		define(function(){
+			//对外接口
+			return factory(global,doc);
+		});
+	}else{
+		global.util = global.util || {};
+		global.util.panel = global.util.panel || factory(global,doc);
+	}
+})(window,document,function(window,document){
 	////////////////////////////////////////////
 	var console = window.console || {'log':function(){}};
 	
 	var private_win = $(window),
-		 private_winW,
-		 private_winH,
-		 private_scrollTop,
-		 private_scrollLeft,
-		 private_active_panel = null,
-		 private_body = $('html,body');
+		private_winW,
+		private_winH,
+		private_scrollTop,
+		private_scrollLeft,
+		private_active_panel = null,
+		private_body = $('html,body');
 
 	var menu_tpl = ['<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>'];
 	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
@@ -180,7 +181,7 @@ window.util.panel = window.util.panel || function(param) {
 		});
 		
 		//append panel dom and mark the dom mark
-      remove_panel();
+		remove_panel();
 		$('body').append(panel_dom);
 		private_active_panel = panel_dom;
 		
@@ -202,22 +203,22 @@ window.util.panel = window.util.panel || function(param) {
 
     ///////////////////////////////////////////
 
-    function filter_clone(args) {
-        var obj = {};
-        for (var i = 0 in args) {
-            obj[i] = {};
-            obj[i]['txt'] = args[i]['txt'];
-            if(args[i]['display']&&args[i]['display'].match(/^(show|hide|disable)$/)){
-            	obj[i]['display'] = args[i]['display']
-            }else{
-            	obj[i]['display'] = 'show';
-            }
-            obj[i]['callback'] = args[i]['callback'] || null;
-        }
-        return obj;
-    }
+	function filter_clone(args) {
+		var obj = {};
+		for (var i = 0 in args) {
+			obj[i] = {};
+			obj[i]['txt'] = args[i]['txt'];
+			if(args[i]['display']&&args[i]['display'].match(/^(show|hide|disable)$/)){
+				obj[i]['display'] = args[i]['display']
+			}else{
+				obj[i]['display'] = 'show';
+			}
+			obj[i]['callback'] = args[i]['callback'] || null;
+		}
+		return obj;
+	}
 
-    // exports start /////////////////////////////////////////
+	// exports start /////////////////////////////////////////
 	function construction(doms_path,type,args,callback,callbefore) {
 		var this_panel = this;
 		this.type = type;
@@ -249,12 +250,12 @@ window.util.panel = window.util.panel || function(param) {
 		}).on('contextmenu',doms_path, function(e) {
 		//	return false;
 			if(!e.target.tagName.match(/INPUT|TEXTAREA/i)){
-         	return false
-         }
+				return false
+			}
 		});
 	};
 	construction.prototype = {
-		'display' : function(name, check) {
+		display: function(name, check) {
 		
 			var that = this;
 			if(!(check&&check.match(/^(show|hide|disable)$/))){
@@ -272,27 +273,29 @@ window.util.panel = window.util.panel || function(param) {
 				return
 			}
 		},
-		'add' : function(name, arg, callback) {
+		add: function(name, arg, callback) {
 			if(!arg['display'] || !arg['display'].match(/^(show|hide|disable)$/)){
 				arg['display'] = null;
-         }
+			}
 			this['list'][name] = this['list'][name] || {};
 			var li = this['list'][name];
 			li['txt'] = arg['txt'] || li['txt'];
 			li['display'] = arg['display'] || li['display'];
 			li['callback'] = callback || li['callback'];
 		},
-		'remove' : function(name) {
+		remove: function(name) {
 			if ( typeof (this['list'][name]) == "object") {
 				delete this['list'][name];
 			}
 		}
 	};
-	exports.init = construction;
-})(window.util.panel);
-
-//提供CommonJS规范的接口
-window.define && define(function(require,exports,module){
-	//对外接口
-	return window.util.panel;
+	return function(param) {
+		var param = param || {};
+		var doms_path = param['targets'] || null,
+			 type = param['type'] || 'menu',
+			 args = param['list'] || {},
+			 callback = param['callback'] || null,
+			 callbefore = param['callbefore'] || null;
+		return new construction(doms_path,type,args,callback,callbefore);
+	};
 });
