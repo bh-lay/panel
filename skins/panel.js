@@ -114,8 +114,6 @@
 				}
 				bingo_panel = false;
 			},20);
-		}).on('contextmenu','.panel_mark', function() {
-			return false;
 		});
 		
 		//window resize 
@@ -130,7 +128,6 @@
 	});
 	//////////////////////////////////
 	function show_panel(left, top, type, param, this_dom, callback) {
-		
 		var panel_tpl = '';
 		switch(type){
 			case 'menu':
@@ -178,6 +175,8 @@
 			} else {
 				callback.call(this_dom, this_name);
 			}
+		}).on('contextmenu', function() {
+			return false;
 		});
 		
 		//append panel dom and mark the dom mark
@@ -219,42 +218,38 @@
 	}
 
 	// exports start /////////////////////////////////////////
-	function construction(doms_path,type,args,callback,callbefore) {
-		var this_panel = this;
-		this.type = type;
-		this.list = filter_clone(args);
+	function Panel(param) {
+		if(!(this instanceof Panel)){
+			return new Panel(param);
+		}
+		var param = param || {};
+		var me = this;
+		var elem = param.elem,
+			doms_path = param['targets'] || null,
+			callback = param['callback'] || null,
+			callbefore = param['callbefore'] || null;
+		this.type = param['type'] || 'menu';
+		this.list = filter_clone(param['list'] || {});
 		if(!doms_path){
 			return
 		}
-		$('body').on('mousedown',doms_path, function(e) {
+		elem.on('contextmenu',doms_path, function(e) {
 			var this_dom = this;
 			remove_panel()
 			if(e.target.tagName.match(/INPUT|TEXTAREA/i)){
 				return
 			}
-			//console.log(e,e.cancelBubble,e.preventDefault,e.stopPropagation)			
-			if (e.button == 2) {
-				e.bubbles=false
-				e.cancelBubble=true;
-				e.preventDefault&&e.preventDefault();
-				e.stopPropagation&&e.stopPropagation();
-				//if(e.button > 0){
-				var x = e.pageX,
-					 y = e.pageY;
-				callbefore&&callbefore.call(this_dom);
-				setTimeout(function() {
-					show_panel(x, y, this_panel.type, this_panel.list, this_dom, callback);
-				},40);
-			}
-			//return false
-		}).on('contextmenu',doms_path, function(e) {
-		//	return false;
-			if(!e.target.tagName.match(/INPUT|TEXTAREA/i)){
-				return false
-			}
+			//if(e.button > 0){
+			var x = e.pageX,
+				 y = e.pageY;
+			callbefore&&callbefore.call(this_dom);
+			setTimeout(function() {
+				show_panel(x, y, me.type, me.list, this_dom, callback);
+			},40);
+			return false;
 		});
 	};
-	construction.prototype = {
+	Panel.prototype = {
 		display: function(name, check) {
 		
 			var that = this;
@@ -290,12 +285,6 @@
 		}
 	};
 	return function(param) {
-		var param = param || {};
-		var doms_path = param['targets'] || null,
-			 type = param['type'] || 'menu',
-			 args = param['list'] || {},
-			 callback = param['callback'] || null,
-			 callbefore = param['callbefore'] || null;
-		return new construction(doms_path,type,args,callback,callbefore);
+		return new Panel(param);
 	};
 });
