@@ -54,11 +54,10 @@
 		private_scrollTop,
 		private_scrollLeft,
 		private_active_panel = null,
-		private_body = $('html,body');
-
-	var menu_tpl = '<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>';
-	var dock_tpl = '<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>';
-	var style_tpl = '<style type="text/css">' + __inline('panel.css') + '</style>';
+		private_body = $('body'),
+		menu_tpl = '<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>',
+		dock_tpl = '<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>',
+		style_tpl = '<style type="text/css">' + __inline('panel.css') + '</style>';
 	
 	function reCountSize(){
 		private_winW = private_win.width();
@@ -87,7 +86,7 @@
 		$('head').append(style_tpl);
 		//try to close panel
 		var bingo_panel = false;
-		$('body').on('mousedown', '.panel_mark', function() {
+		private_body.on('mousedown', '.panel_mark', function() {
 			bingo_panel = true;
 		}).on('mousedown', function() {
 			setTimeout(function() {
@@ -100,7 +99,7 @@
 		
 		//window resize 
 		var delay;
-		$(window).on('resize scroll',function(){
+		private_win.on('resize scroll',function(){
 			clearTimeout(delay);
 			delay = setTimeout(function(){
 				reCountSize();
@@ -115,23 +114,17 @@
 			list_html = '';
 		for (var i = 0 in param) {
 			param[i]['display'] = param[i]['display'] || 'show';
-			switch(param[i]['display']){
-				case 'show':
-					if (param[i]['callback']) {
-						list_html += '<a data-callback="true" data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</a>';
-					}else{
-						list_html += '<a data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</a>';
-					}
-				break
-				//case 'hide':
-				//break
-				case 'disable':
-					list_html += '<span data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</span>';
-				break
+			if(param[i]['display'] == 'show'){
+				if (param[i]['callback']) {
+					list_html += '<a data-callback="true" data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</a>';
+				}else{
+					list_html += '<a data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</a>';
+				}
+			}else if(param[i]['display'] == 'disable'){
+				list_html += '<span data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</span>';
 			}
 		}
 		panel_tpl = panel_tpl.replace(/{-content-}/, list_html);
-		
 		
 		var panel_dom = $(panel_tpl);
 		panel_dom.on('click', 'a', function() {
@@ -152,7 +145,7 @@
 		
 		//append panel dom and mark the dom mark
 		remove_panel();
-		$('body').append(panel_dom);
+		private_body.append(panel_dom);
 		private_active_panel = panel_dom;
 		
 		// setting panel dom position
@@ -160,14 +153,14 @@
 			 panel_w = panel_dom.outerWidth();
 		
 		if(panel_h + top > private_winH + private_scrollTop){
-			top = private_scrollTop + private_winH - panel_h;
+			top = private_scrollTop + private_winH - panel_h - 5;
 		}
 		if(panel_w + left > private_winW + private_scrollLeft){
 			left = private_scrollLeft + private_winW - panel_w
 		}
 		panel_dom.css({
-			'top' : top,
-			'left' : left
+			top : top,
+			left : left
 		});
 	}
 
