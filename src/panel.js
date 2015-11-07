@@ -47,8 +47,6 @@
 		global.util.panel = global.util.panel || factory(global,doc);
 	}
 })(window,document,function(window,document){
-	////////////////////////////////////////////
-	var console = window.console || {'log':function(){}};
 	
 	var private_win = $(window),
 		private_winW,
@@ -58,8 +56,8 @@
 		private_active_panel = null,
 		private_body = $('html,body');
 
-	var menu_tpl = ['<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>'];
-	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
+	var menu_tpl = '<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>';
+	var dock_tpl = '<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>';
 	var style_tpl = '<style type="text/css">' + __inline('panel.css') + '</style>';
 	
 	function reCountSize(){
@@ -112,20 +110,9 @@
 	});
 	//////////////////////////////////
 	function show_panel(left, top, type, param, this_dom, callback) {
-		var panel_tpl = '';
-		switch(type){
-			case 'menu':
-				panel_tpl = menu_tpl.join('');
-			break
-			case 'dock':
-				panel_tpl = dock_tpl.join('');
-			break
-			default :
-				console.log('error');
-				return;
-		}
-		
-		var list_html = '';
+		//menu、dock
+		var panel_tpl = type == 'dock' ? dock_tpl : menu_tpl,
+			list_html = '';
 		for (var i = 0 in param) {
 			param[i]['display'] = param[i]['display'] || 'show';
 			switch(param[i]['display']){
@@ -184,7 +171,6 @@
 		});
 	}
 
-    ///////////////////////////////////////////
 
 	function filter_clone(args) {
 		var obj = {};
@@ -201,7 +187,7 @@
 		return obj;
 	}
 
-	// exports start /////////////////////////////////////////
+	//
 	function Panel(param) {
 		if(!(this instanceof Panel)){
 			return new Panel(param);
@@ -235,8 +221,6 @@
 	};
 	Panel.prototype = {
 		display: function(name, check) {
-		
-			var that = this;
 			if(!(check&&check.match(/^(show|hide|disable)$/))){
 				//check error
 				return
