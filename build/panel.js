@@ -60,7 +60,7 @@
 
 	var menu_tpl = ['<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>'];
 	var dock_tpl = ['<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>'];
-	var style_tpl = '<style type="text/css">' + __inline('panel.css') + '</style>';
+	var style_tpl = '<style type="text/css">' + ".panel_menu{\n\tposition: absolute;\n\tz-index :10000;\n\twidth:140px;\n\tbackground:#fff;\n\tborder:1px solid #bbb;\n\tborder-radius:4px;\n}\n.pa_me_list{\n\tpadding:5px 0px;\n\tmargin:0px;\n}\n.pa_me_list span,\n.pa_me_list a{\n\tline-height:24px;\n\tdisplay:block;\n\tfont-size:12px;\n\ttext-indent:2em;\n\tpadding: 2px 5px;\n\ttext-decoration:none;\n}\n.pa_me_list span{\n\tcursor: default;\n\tcolor:#aaa;\n}\n.pa_me_list a{\n\tcolor:#444;\n}\n.pa_me_list a:hover{\n\tcolor:#000;\n\tbackground:#eee;}\n.panel_dock{\n\tposition: absolute;\n\tz-index :10000;\n\tbackground:#444;\n\tborder-radius:4px;\n\tbox-shadow:1px 1px 40px #000;\n\t_border:1px solid #666;\n}\n.pa_do_body{\n\tpadding:0px 10px;\n}\n.panel_dock span,\n.panel_dock a{\n\tline-height:32px;\n\tdisplay:inline-block;\n\tfont-size:12px;\n\tcolor:#888;\n\tpadding: 0px 10px;\n}\n.panel_dock span{\n\tcursor: default;\n}\n.panel_dock a{\n\tcolor:#f4f4f4;\n}\n.panel_dock a:hover{\n\tcolor:#222;\n\tbackground:#eee;\n}" + '</style>';
 	
 	function reCountSize(){
 		private_winW = private_win.width();
