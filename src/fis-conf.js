@@ -7,3 +7,10 @@ fis.hook('relative');
 fis.match('**', {
   relative: true
 });
+
+fis.match('panel.css', {
+  release: false
+});
+fis.match('style.css', {
+  release: false
+});
