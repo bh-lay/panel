@@ -14,3 +14,6 @@ fis.match('panel.css', {
 fis.match('style.css', {
   release: false
 });
+fis.match('script.js', {
+  release: false
+});
