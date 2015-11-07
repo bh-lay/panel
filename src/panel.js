@@ -22,8 +22,6 @@
  * 			console.log('you have chioce "' , name , '" from the [ ' , this , ']');
  * 		}
  * 	});
- * //指定类型
- * 	o.type = 'menu';//@param:'menu','dock'
  * //选项置灰
  * 	o.display('rename','disable');
  * //选项恢复
@@ -56,7 +54,6 @@
 		private_active_panel = null,
 		private_body = $('body'),
 		menu_tpl = '<div class="panel_menu panel_mark"><ul class="pa_me_list">{-content-}</ul></div>',
-		dock_tpl = '<div class="panel_dock panel_mark"><div class="pa_do_body">{-content-}</div></div>',
 		style_tpl = '<style type="text/css">' + __inline('panel.css') + '</style>';
 	
 	function reCountSize(){
@@ -108,10 +105,9 @@
 		});
 	});
 	//////////////////////////////////
-	function show_panel(left, top, type, param, this_dom, callback) {
+	function show_panel(left, top, param, this_dom, callback) {
 		//menu、dock
-		var panel_tpl = type == 'dock' ? dock_tpl : menu_tpl,
-			list_html = '';
+		var list_html = '';
 		for (var i = 0 in param) {
 			param[i]['display'] = param[i]['display'] || 'show';
 			if(param[i]['display'] == 'show'){
@@ -124,9 +120,8 @@
 				list_html += '<span data-name="' + (i || '') + '" href="javascript:;">' + (param[i]['txt'] || '') + '</span>';
 			}
 		}
-		panel_tpl = panel_tpl.replace(/{-content-}/, list_html);
 		
-		var panel_dom = $(panel_tpl);
+		var panel_dom = $(menu_tpl.replace(/{-content-}/, list_html));
 		panel_dom.on('click', 'a', function() {
 			remove_panel()
 			var this_name = $(this).attr('data-name') || '';
@@ -169,13 +164,13 @@
 		var obj = {};
 		for (var i = 0 in args) {
 			obj[i] = {};
-			obj[i]['txt'] = args[i]['txt'];
-			if(args[i]['display']&&args[i]['display'].match(/^(show|hide|disable)$/)){
-				obj[i]['display'] = args[i]['display']
+			obj[i].txt = args[i].txt;
+			if(!args[i].display || !args[i].display.match(/^(hide|disable)$/)){
+				obj[i].display = 'show';
 			}else{
-				obj[i]['display'] = 'show';
+				obj[i].display = args[i]['display']
 			}
-			obj[i]['callback'] = args[i]['callback'] || null;
+			obj[i].callback = args[i].callback || null;
 		}
 		return obj;
 	}
@@ -188,10 +183,10 @@
 		var param = param || {};
 		var me = this;
 		var elem = param.elem,
-			doms_path = param['targets'] || null,
-			callback = param['callback'] || null,
-			callbefore = param['callbefore'] || null;
-		this.type = param['type'] || 'menu';
+			doms_path = param.targets || null,
+			callback = param.callback || null,
+			callbefore = param.callbefore || null;
+
 		this.list = filter_clone(param['list'] || {});
 		if(!doms_path){
 			return
@@ -207,7 +202,7 @@
 				 y = e.pageY;
 			callbefore&&callbefore.call(this_dom);
 			setTimeout(function() {
-				show_panel(x, y, me.type, me.list, this_dom, callback);
+				show_panel(x, y, me.list, this_dom, callback);
 			},40);
 			return false;
 		});
@@ -230,14 +225,14 @@
 			}
 		},
 		add: function(name, arg, callback) {
-			if(!arg['display'] || !arg['display'].match(/^(show|hide|disable)$/)){
-				arg['display'] = null;
+			if(!arg.display || !arg.display.match(/^(hide|disable)$/)){
+				arg.display = 'show';
 			}
-			this['list'][name] = this['list'][name] || {};
-			var li = this['list'][name];
-			li['txt'] = arg['txt'] || li['txt'];
-			li['display'] = arg['display'] || li['display'];
-			li['callback'] = callback || li['callback'];
+			this.list[name] = this.list[name] || {};
+			var li = this.list[name];
+			li.txt = arg.txt || li.txt;
+			li.display = arg.display || li.display;
+			li.callback = callback || li.callback;
 		},
 		remove: function(name) {
 			if ( typeof (this['list'][name]) == "object") {

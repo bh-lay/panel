@@ -17,12 +17,10 @@ var o = util.panel({
 	}
 });
 
-//指定类型
-o.type = 'menu';//@param:'menu','dock'
 //选项置灰
 o.display('share','disable');
 //选项恢复
-//	o.disable('share',false);
+// o.display('share','show');
 //增删菜单条目
 o.add('test',{'txt':'测试'},function(){
 	alert(12)
@@ -48,5 +46,3 @@ var p = util.panel({
 	}
 });
 
-//指定类型
-p.type = 'dock';//@param:'menu','dock'
